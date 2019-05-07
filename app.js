@@ -126,7 +126,8 @@ var UIController = (function(){
         expansesLabel: '.budget__expenses--value',
         percentageLabel:'.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel:'.item__percentage'
+        expensesPercLabel:'.item__percentage',
+        dateLabel:'.budget__title--month'
     };
     var nodeListForEach = function(list,callback){
         for(var i = 0; i < list.length; i++){
@@ -155,7 +156,7 @@ var UIController = (function(){
             //2.replace placeholder text with actual data
             newHtml= html.replace('%id%',obj.id);
             newHtml = newHtml.replace('%description%',obj.description);
-            newHtml = newHtml.replace('%value%',obj.value);
+            newHtml = newHtml.replace('%value%',this.formatNumber(obj.value,type));
             //3.Insert the HTML into the DOM
             document.querySelector(element).insertAdjacentHTML('beforeend',newHtml);
         },
@@ -197,10 +198,34 @@ var UIController = (function(){
                 }
             });
         },
+        formatNumber:function(num,type){
+            var numSplit,int,dec,sign;
+            num = Math.abs(num);
+            num = num.toFixed(2);//returns a string
+
+            numSplit = num.split('.');//returns an array
+            int = numSplit[0];
+            if(int.length > 3){
+                int = int.substr(0,int.length-3) + ',' + int.substr(int.length-3,3);
+            }
+
+            dec = numSplit[1];
+            return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec; 
+        },
+
+        displayMonth: function(){
+            var now,year,month,months;
+            now = new Date();
+            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            month = now.getMonth();
+            year = now.getFullYear();
+            document.querySelector(DOMstrings.dateLabel).textContent = months[month] + ' ' + year;
+        },
+
         getDOMstrings: function(){
             return DOMstrings;
         }
-    }
+    };
 
 
 })();
@@ -281,6 +306,7 @@ var controller = (function(budgetCtrl,UICtrl){
     return {
         init: function(){
             console.log('Application has started');
+            UICtrl.displayMonth();
             UICtrl.displayBudget({
                 budget: 0,
                 totalInc: 0,
