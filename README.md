@@ -1,2 +1,2 @@
 # TheBudgetApp
-JavaScript course project
+JS course project
