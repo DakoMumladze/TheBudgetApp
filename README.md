@@ -1,2 +1,2 @@
 # TheBudgetApp
-JS course project
+Created based on the udemy course about JavaScript
